@@ -17,7 +17,7 @@ export function AppHeader() {
           Pitch<span className="text-moss">folio</span>
         </Link>
 
-        <nav className="ml-auto flex gap-1">
+        <nav className="ml-auto flex items-center gap-1">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -33,6 +33,14 @@ export function AppHeader() {
               {item.label}
             </Link>
           ))}
+
+          <Link
+            href="/new"
+            className="ml-2 flex min-h-11 items-center rounded-md border border-moss bg-moss
+              px-3.5 text-sm font-medium text-paper transition-colors hover:bg-moss-hover"
+          >
+            New proposal
+          </Link>
         </nav>
       </div>
     </header>

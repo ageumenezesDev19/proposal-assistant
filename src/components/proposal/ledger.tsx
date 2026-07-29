@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Proposal, ProposalStatus, replyRate } from "@/lib/demo-data";
 
 const statusStyles: Record<ProposalStatus, string> = {
@@ -11,6 +12,29 @@ const statusStyles: Record<ProposalStatus, string> = {
 /** The record of what was sent and what came back — a ledger, hence the mono. */
 export function Ledger({ proposals }: { proposals: Proposal[] }) {
   const { percent, total } = replyRate(proposals);
+
+  // An empty screen is an invitation, not a notice: say what this will become
+  // and give the one action that starts it.
+  if (proposals.length === 0) {
+    return (
+      <section className="mt-14 rounded-xl border border-dashed border-rule px-6 py-12 text-center">
+        <h2 className="font-serif text-lg font-medium">
+          Your reply rate starts here
+        </h2>
+        <p className="mx-auto mt-2 max-w-sm text-sm text-ink-soft">
+          Once you mark proposals as sent, this becomes the record of what got
+          answered — and which kind of job is worth your time.
+        </p>
+        <Link
+          href="/new"
+          className="mt-5 inline-flex min-h-11 items-center rounded-md border border-moss
+            bg-moss px-4 text-sm font-medium text-paper transition-colors hover:bg-moss-hover"
+        >
+          Write your first proposal
+        </Link>
+      </section>
+    );
+  }
 
   return (
     <section className="mt-14">
