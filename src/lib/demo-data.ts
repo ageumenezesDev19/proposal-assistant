@@ -35,6 +35,43 @@ export interface Proposal {
   status: ProposalStatus;
 }
 
+/**
+ * The evidence a proposal is built from. The result field is what makes a
+ * draft persuasive, so the form asks for it plainly rather than leaving it to
+ * a generic description.
+ */
+export interface Case {
+  id: string;
+  title: string;
+  context: string;
+  problem: string;
+  result: string;
+  stack: string[];
+}
+
+export const demoCases: Case[] = [
+  {
+    id: "c1",
+    title: "Inventory & production system",
+    context: "Retail client · freelance contract · 2025–present",
+    problem:
+      "The team reconciled stock by hand across spreadsheets every morning, and nobody trusted the numbers by the afternoon.",
+    result:
+      "One system used daily by the whole team: 28 routes, role-based access, and XLSX/PDF exports that replaced the manual reconciliation.",
+    stack: ["Next.js 15", "React 19", "TypeScript", "Playwright"],
+  },
+  {
+    id: "c2",
+    title: "DesPensa — desktop inventory app",
+    context: "Own product · shipped 2024",
+    problem:
+      "Small households and shops track stock in notebooks, and lose the history the moment a page is lost.",
+    result:
+      "A cross-platform desktop app with multiple profiles, backup and restore, and offline-first storage.",
+    stack: ["Tauri", "React", "TypeScript"],
+  },
+];
+
 export const demoAnalysis: Analysis = {
   requirements: ["React", "Shopify API", "Dashboards", "CSV export"],
   budget: { range: "$3,000–5,000", timeline: "4 weeks · fixed price" },

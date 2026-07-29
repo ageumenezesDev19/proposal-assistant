@@ -9,7 +9,7 @@ export default function Home() {
     <>
       <AppHeader />
 
-      <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20 sm:px-6">
+      <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-28 sm:px-6 sm:pb-20">
         <div className="mb-7">
           <p className="eyebrow mb-2.5">Draft</p>
           <h1 className="font-serif text-xl leading-tight font-medium tracking-tight sm:text-2xl">
