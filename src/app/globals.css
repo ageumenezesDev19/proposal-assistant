@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Pitchfolio design tokens — see docs/DESIGN.md for the reasoning.
+   Serif is content, sans is the tool, mono is numbers. */
+@theme {
+  --color-paper: #fbfaf7;
+  --color-paper-sunk: #f2f0ea;
+  --color-ink: #1f1d1a;
+  --color-ink-soft: #6b665d;
+  --color-rule: #e2dfd6;
+  --color-moss: #3e5641;
+  --color-moss-hover: #344a37;
+  /* Warning only. Never a brand or button colour — an alert loses its force
+     when it wears the same colour as an ordinary action. */
+  --color-flag: #a6432f;
+
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --text-xs: 0.8125rem; /* 13 */
+  --text-sm: 0.9375rem; /* 15 */
+  --text-base: 1.0625rem; /* 17 — reading size for the draft */
+  --text-lg: 1.3125rem; /* 21 */
+  --text-xl: 1.75rem; /* 28 */
+  --text-2xl: 2.5rem; /* 40 */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :focus-visible {
+    outline: 2px solid var(--color-moss);
+    outline-offset: 3px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Mono, uppercase, tracked-out label: section headings in the margin and
+     column headers in the ledger. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
 }
