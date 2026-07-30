@@ -1,29 +1,62 @@
 import { Analysis, Draft } from "@/lib/demo-data";
+import { EditableParagraph } from "./editable-paragraph";
 
 interface ManuscriptProps {
   draft: Draft;
   analysis: Analysis;
+  /** Omit to render the draft read-only, as on a saved proposal. */
+  onDraftChange?: (next: Draft) => void;
 }
 
 /**
  * The draft is set as a document, not a form field, and the analysis sits in
  * the margin beside it — an editor's marginalia rather than a separate panel.
  * On narrow screens the margin drops below the draft as annotation cards.
+ *
+ * A generated draft is a starting point, never a finished proposal, so when
+ * `onDraftChange` is supplied the greeting and every paragraph become editable
+ * in place — no separate "edit mode" to enter first.
  */
-export function Manuscript({ draft, analysis }: ManuscriptProps) {
+export function Manuscript({ draft, analysis, onDraftChange }: ManuscriptProps) {
+  const editable = Boolean(onDraftChange);
+
+  function updateParagraph(id: string, text: string) {
+    onDraftChange?.({
+      ...draft,
+      paragraphs: draft.paragraphs.map((paragraph) =>
+        paragraph.id === id ? { ...paragraph, text } : paragraph,
+      ),
+    });
+  }
+
   return (
     <div className="grid overflow-hidden rounded-xl border border-rule bg-white md:grid-cols-[minmax(0,1fr)_260px]">
       <article className="px-5 py-7 sm:px-10">
-        <h2 className="mb-6 border-b border-rule pb-3.5 font-serif text-lg font-medium">
-          {draft.greeting}
-        </h2>
+        {editable ? (
+          <input
+            value={draft.greeting}
+            onChange={(event) => onDraftChange?.({ ...draft, greeting: event.target.value })}
+            aria-label="Greeting"
+            className="-mx-2 mb-6 block w-[calc(100%+1rem)] rounded border border-transparent
+              border-b-rule bg-transparent px-2 pb-3.5 font-serif text-lg font-medium
+              transition-colors hover:border-rule focus:border-moss focus:outline-none"
+          />
+        ) : (
+          <h2 className="mb-6 border-b border-rule pb-3.5 font-serif text-lg font-medium">
+            {draft.greeting}
+          </h2>
+        )}
 
         {draft.paragraphs.map((paragraph) => (
-          <p
-            key={paragraph.id}
-            className="relative mb-4.5 font-serif text-base leading-[1.75]"
-          >
-            {paragraph.text}
+          <div key={paragraph.id} className="relative mb-4.5">
+            {editable ? (
+              <EditableParagraph
+                value={paragraph.text}
+                onChange={(text) => updateParagraph(paragraph.id, text)}
+              />
+            ) : (
+              <p className="font-serif text-base leading-[1.75]">{paragraph.text}</p>
+            )}
             {/* Hairline tying an annotated paragraph to its margin note.
                 Hidden once the margin stops being beside the text. */}
             {paragraph.noteId && (
@@ -32,7 +65,7 @@ export function Manuscript({ draft, analysis }: ManuscriptProps) {
                 className="absolute top-3.5 -right-10 hidden w-10 border-t border-rule md:block"
               />
             )}
-          </p>
+          </div>
         ))}
       </article>
 

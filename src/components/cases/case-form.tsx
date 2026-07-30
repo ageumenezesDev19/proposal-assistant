@@ -7,13 +7,14 @@ import { Case } from "@/lib/demo-data";
 interface CaseFormProps {
   onSave: (item: Case) => void;
   onCancel: () => void;
+  pending?: boolean;
 }
 
 const fieldClass =
   "w-full rounded-lg border border-rule bg-white px-3.5 py-2.5 text-sm " +
   "placeholder:text-ink-soft focus:border-moss focus:outline-none";
 
-export function CaseForm({ onSave, onCancel }: CaseFormProps) {
+export function CaseForm({ onSave, onCancel, pending = false }: CaseFormProps) {
   const [title, setTitle] = useState("");
   const [context, setContext] = useState("");
   const [problem, setProblem] = useState("");
@@ -98,10 +99,10 @@ export function CaseForm({ onSave, onCancel }: CaseFormProps) {
       </div>
 
       <div className="mt-6 flex flex-wrap gap-2.5">
-        <Button type="submit" disabled={!ready}>
-          Save case
+        <Button type="submit" disabled={!ready || pending}>
+          {pending ? "Saving…" : "Save case"}
         </Button>
-        <Button type="button" variant="quiet" onClick={onCancel}>
+        <Button type="button" variant="quiet" onClick={onCancel} disabled={pending}>
           Cancel
         </Button>
       </div>

@@ -5,6 +5,26 @@
  * from.
  */
 
+export interface ExampleProfile {
+  headline: string;
+  bio: string;
+  stack: string[];
+  avoidScope: string;
+}
+
+/**
+ * Shown to a signed-out visitor on the Profile page, and as placeholder text
+ * for a signed-in user's still-empty fields. A fictional freelancer, not
+ * Ageu's real bio — otherwise a demo visitor (or a fresh signup) would see
+ * his actual LinkedIn copy and mistake it for their own saved profile.
+ */
+export const exampleProfile: ExampleProfile = {
+  headline: "Independent developer, one client at a time",
+  bio: "Most of the work I take on starts as a manual process eating someone's week — a spreadsheet, a form, a report nobody trusts. I replace it with something the team opens every morning without thinking about it.",
+  stack: ["Vue", "Laravel", "MySQL", "Redis"],
+  avoidScope: "Unpaid trial projects, fixed price without a clear spec",
+};
+
 export type ProposalStatus = "draft" | "sent" | "replied" | "won" | "lost";
 
 export interface Annotation {
@@ -69,6 +89,23 @@ export const demoCases: Case[] = [
     result:
       "A cross-platform desktop app with multiple profiles, backup and restore, and offline-first storage.",
     stack: ["Tauri", "React", "TypeScript"],
+  },
+];
+
+/**
+ * Example blocks for demo mode. Without these the feature reads as an empty
+ * box to anyone without an account, and a visitor never sees what it does.
+ */
+export const demoSnippets = [
+  {
+    id: "s1",
+    label: "Fixed-price terms",
+    body: "I quote fixed price once the scope is written down and we both agree on it. Before that I'd rather work hourly for a short discovery — it protects you from paying for my guesswork, and me from absorbing scope that grew.",
+  },
+  {
+    id: "s2",
+    label: "How I start",
+    body: "The first week is always the same: I get the thing running end to end, however roughly, so we're looking at something real instead of a document. Everything after that is informed by what we learn from it.",
   },
 ];
 

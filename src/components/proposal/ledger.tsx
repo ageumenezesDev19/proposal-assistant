@@ -1,16 +1,15 @@
 import Link from "next/link";
-import { Proposal, ProposalStatus, replyRate } from "@/lib/demo-data";
-
-const statusStyles: Record<ProposalStatus, string> = {
-  draft: "text-ink-soft",
-  sent: "text-ink-soft",
-  replied: "text-ink",
-  won: "text-moss",
-  lost: "text-ink-soft",
-};
+import { Proposal, replyRate } from "@/lib/demo-data";
+import { StatusControl } from "./status-control";
 
 /** The record of what was sent and what came back — a ledger, hence the mono. */
-export function Ledger({ proposals }: { proposals: Proposal[] }) {
+export function Ledger({
+  proposals,
+  editable = false,
+}: {
+  proposals: Proposal[];
+  editable?: boolean;
+}) {
   const { percent, total } = replyRate(proposals);
 
   // An empty screen is an invitation, not a notice: say what this will become
@@ -46,38 +45,48 @@ export function Ledger({ proposals }: { proposals: Proposal[] }) {
         </p>
       </div>
 
-      <table className="w-full border-collapse">
-        <thead>
-          <tr>
-            <th className="eyebrow border-b border-rule pb-2.5 pr-3 text-left">Job</th>
-            <th className="eyebrow hidden border-b border-rule pb-2.5 pr-3 text-left sm:table-cell">
-              Budget
-            </th>
-            <th className="eyebrow border-b border-rule pb-2.5 pr-3 text-left">Sent</th>
-            <th className="eyebrow border-b border-rule pb-2.5 text-left">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {proposals.map((proposal) => (
-            <tr key={proposal.id}>
-              <td className="border-b border-rule py-3.5 pr-3 text-sm">
-                {proposal.jobTitle}
-              </td>
-              <td className="hidden border-b border-rule py-3.5 pr-3 font-mono text-xs text-ink-soft sm:table-cell">
-                {proposal.budget}
-              </td>
-              <td className="border-b border-rule py-3.5 pr-3 font-mono text-xs whitespace-nowrap text-ink-soft">
-                {proposal.sentOn}
-              </td>
-              <td
-                className={`border-b border-rule py-3.5 font-mono text-[11px] tracking-wider uppercase ${statusStyles[proposal.status]}`}
-              >
-                {proposal.status}
-              </td>
+      {editable && (
+        <p className="mb-3 text-xs text-ink-soft">
+          Change a status as the client replies — the rate above follows.
+        </p>
+      )}
+
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="eyebrow border-b border-rule pb-2.5 pr-3 text-left">Job</th>
+              <th className="eyebrow hidden border-b border-rule pb-2.5 pr-3 text-left sm:table-cell">
+                Budget
+              </th>
+              <th className="eyebrow border-b border-rule pb-2.5 pr-3 text-left">Sent</th>
+              <th className="eyebrow border-b border-rule pb-2.5 text-left">Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {proposals.map((proposal) => (
+              <tr key={proposal.id}>
+                <td className="border-b border-rule py-3.5 pr-3 text-sm">
+                  {proposal.jobTitle}
+                </td>
+                <td className="hidden border-b border-rule py-3.5 pr-3 font-mono text-xs text-ink-soft sm:table-cell">
+                  {proposal.budget}
+                </td>
+                <td className="border-b border-rule py-3.5 pr-3 font-mono text-xs whitespace-nowrap text-ink-soft">
+                  {proposal.sentOn || "—"}
+                </td>
+                <td className="border-b border-rule py-3.5">
+                  <StatusControl
+                    id={proposal.id}
+                    status={proposal.status}
+                    editable={editable}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }

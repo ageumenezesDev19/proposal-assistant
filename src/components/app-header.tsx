@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UserMenu } from "@/components/user-menu";
 
 const nav = [
   { href: "/", label: "Proposals" },
@@ -10,8 +11,23 @@ const nav = [
  * Wide screens carry the whole nav in the top bar. On phones the three
  * sections move to a bottom bar — a tool people open every day should keep its
  * navigation under the thumb, and the top row has no space for it at 360px.
+ *
+ * `userEmail` is omitted (rather than passed as null) by pages that haven't
+ * been wired to Supabase yet, so the auth control only appears once a page
+ * actually knows the session state.
+ *
+ * Account state (email, sign out) lives in the UserMenu icon at the right
+ * edge, not on the Profile page — Profile is about voice (what drafts sound
+ * like), this is about who's signed in, and a plain "Sign out" text link
+ * sitting between "Cases" and "Profile" was too easy to hit by mistake.
  */
-export function AppHeader({ current = "/" }: { current?: string }) {
+export function AppHeader({
+  current = "/",
+  userEmail,
+}: {
+  current?: string;
+  userEmail?: string | null;
+}) {
   return (
     <>
       <header className="border-b border-rule">
@@ -37,6 +53,8 @@ export function AppHeader({ current = "/" }: { current?: string }) {
             >
               New proposal
             </Link>
+
+            {userEmail !== undefined && <UserMenu userEmail={userEmail} />}
           </nav>
         </div>
       </header>

@@ -40,6 +40,15 @@
   }
 }
 
+/* Tailwind v4 emits `calc(infinity * 1px)` for rounded-full, which compiles to
+   `border-radius: 3.40282e38px` — the largest 32-bit float. Engines disagree on
+   a value that extreme, and Safari has been seen drawing those elements square.
+   Declared outside @layer on purpose: unlayered rules beat every layer, so this
+   holds no matter how Tailwind orders its own utilities on a rebuild. */
+.rounded-full {
+  border-radius: 9999px;
+}
+
 @layer components {
   /* Mono, uppercase, tracked-out label: section headings in the margin and
      column headers in the ledger. */

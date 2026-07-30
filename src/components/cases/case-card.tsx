@@ -4,10 +4,27 @@ import { Case } from "@/lib/demo-data";
  * A case is evidence, so it reads as a short document: the problem and the
  * result get equal weight, because the pair is what a client recognises.
  */
-export function CaseCard({ item }: { item: Case }) {
+export function CaseCard({
+  item,
+  onDelete,
+}: {
+  item: Case;
+  onDelete?: (id: string) => void;
+}) {
   return (
     <article className="rounded-xl border border-rule bg-white p-5 sm:p-7">
-      <h2 className="font-serif text-lg font-medium">{item.title}</h2>
+      <div className="flex items-start justify-between gap-3">
+        <h2 className="font-serif text-lg font-medium">{item.title}</h2>
+        {onDelete && (
+          <button
+            type="button"
+            onClick={() => onDelete(item.id)}
+            className="flex min-h-8 items-center text-xs text-ink-soft underline underline-offset-4 hover:text-flag"
+          >
+            Delete
+          </button>
+        )}
+      </div>
       <p className="mt-1 font-mono text-xs text-ink-soft">{item.context}</p>
 
       <dl className="mt-4 space-y-3">
