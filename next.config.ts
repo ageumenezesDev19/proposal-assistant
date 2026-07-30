@@ -1,11 +1,29 @@
+import { networkInterfaces } from "node:os";
 import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV === "development";
+
+/**
+ * Every non-internal IPv4 this machine answers on, so opening the dev server
+ * from a phone on the same Wi-Fi works without editing this file. Hard-coding
+ * the address breaks the next time the router hands out a different lease.
+ */
+function localNetworkAddresses(): string[] {
+  return Object.values(networkInterfaces())
+    .flatMap((addresses) => addresses ?? [])
+    .filter((address) => address.family === "IPv4" && !address.internal)
+    .map((address) => address.address);
+}
 
 const nextConfig: NextConfig = {
   // A stray lockfile in the home directory makes Next guess the wrong workspace
   // root; pin it to this project.
   turbopack: { root: __dirname },
+
+  // Without this, Next blocks the phone's HMR socket as a cross-origin dev
+  // request, so the device silently stops receiving updates and keeps showing
+  // whatever it loaded first.
+  allowedDevOrigins: localNetworkAddresses(),
 
   async headers() {
     // Safari caches aggressively over a LAN address, which is how this app gets
