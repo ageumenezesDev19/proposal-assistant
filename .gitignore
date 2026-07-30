@@ -43,6 +43,5 @@ next-env.d.ts
 # keep the template, ignore real secrets
 !.env.local.example
 
-# agent instructions — local only, never pushed
 CLAUDE.md
 AGENTS.md
