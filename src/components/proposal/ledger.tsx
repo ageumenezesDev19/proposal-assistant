@@ -47,7 +47,8 @@ export function Ledger({
 
       {editable && (
         <p className="mb-3 text-xs text-ink-soft">
-          Change a status as the client replies — the rate above follows.
+          Open a proposal to reread or edit it. Change a status as the client replies — the rate
+          above follows.
         </p>
       )}
 
@@ -65,9 +66,21 @@ export function Ledger({
           </thead>
           <tbody>
             {proposals.map((proposal) => (
-              <tr key={proposal.id}>
+              <tr key={proposal.id} className="group">
                 <td className="border-b border-rule py-3.5 pr-3 text-sm">
-                  {proposal.jobTitle}
+                  {/* Only the title is the link, not the whole row: the status
+                      cell is its own control, and nesting one inside a link
+                      makes both harder to hit and to reach by keyboard. */}
+                  {editable ? (
+                    <Link
+                      href={`/proposals/${proposal.id}`}
+                      className="underline-offset-4 group-hover:underline"
+                    >
+                      {proposal.jobTitle}
+                    </Link>
+                  ) : (
+                    proposal.jobTitle
+                  )}
                 </td>
                 <td className="hidden border-b border-rule py-3.5 pr-3 font-mono text-xs text-ink-soft sm:table-cell">
                   {proposal.budget}

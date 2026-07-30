@@ -29,6 +29,46 @@ export async function listProposals(): Promise<Proposal[] | null> {
   }));
 }
 
+export interface SavedProposal extends Proposal {
+  jobPost: string;
+  analysis: Analysis;
+  draft: Draft;
+}
+
+/**
+ * The full row, including the parts the ledger doesn't show. Returns null for
+ * a missing id as well as a signed-out visitor, so the page can render its own
+ * not-found rather than leaking the difference between "no such proposal" and
+ * "someone else's proposal".
+ */
+export async function getProposal(id: string): Promise<SavedProposal | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data } = await supabase
+    .from("proposals")
+    .select("*")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .single();
+
+  if (!data) return null;
+
+  return {
+    id: data.id,
+    jobTitle: data.job_title,
+    budget: data.budget,
+    sentOn: data.sent_on ?? "",
+    status: data.status,
+    jobPost: data.job_post,
+    analysis: data.analysis as Analysis,
+    draft: data.draft as Draft,
+  };
+}
+
 export interface SaveDraftInput {
   jobTitle: string;
   jobPost: string;
@@ -62,6 +102,46 @@ export async function saveDraft(input: SaveDraftInput) {
 
   revalidatePath("/");
   return data.id as string;
+}
+
+/** Persists edits made to an already-saved proposal's text. */
+export async function updateProposalDraft(id: string, draft: Draft) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Sign in to edit a proposal.");
+
+  const { error } = await supabase
+    .from("proposals")
+    .update({ draft })
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/");
+  revalidatePath(`/proposals/${id}`);
+}
+
+export async function deleteProposal(id: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Sign in to manage your proposals.");
+
+  // RLS already scopes this to the caller's rows; the explicit filter keeps
+  // the query's intent readable without depending on the policy alone.
+  const { error } = await supabase
+    .from("proposals")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/");
 }
 
 export async function updateProposalStatus(id: string, status: ProposalStatus) {

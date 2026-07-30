@@ -23,10 +23,28 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+const title = "Pitchfolio — write proposals that sound like you";
+const description =
+  "Paste a job post, see what the client actually needs, and get a draft built from your own case studies. Track which proposals get replies.";
+
 export const metadata: Metadata = {
-  title: "Pitchfolio — write proposals that sound like you",
-  description:
-    "Paste a job post, see what the client actually needs, and get a draft built from your own case studies. Track which proposals get replies.",
+  // Relative OG image URLs have to resolve against something absolute, or the
+  // card silently renders without an image. Set NEXT_PUBLIC_SITE_URL on the
+  // deployment; localhost keeps previews working while developing.
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  title,
+  description,
+  openGraph: {
+    type: "website",
+    siteName: "Pitchfolio",
+    title,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({

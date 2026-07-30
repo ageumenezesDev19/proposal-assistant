@@ -93,7 +93,7 @@ export function NewProposalClient({
     if (!signedIn) return;
     setSaving(true);
     try {
-      await saveDraft({
+      const savedId = await saveDraft({
         jobTitle: guessJobTitle(jobPost),
         jobPost,
         budget: analysis.budget.range,
@@ -101,7 +101,9 @@ export function NewProposalClient({
         draft,
       });
       setSaved(true);
-      router.push("/");
+      // Land on the saved proposal, not the list: what you just wrote stays in
+      // front of you, and it shows straight away that a save is reopenable.
+      router.push(`/proposals/${savedId}`);
     } finally {
       setSaving(false);
     }
