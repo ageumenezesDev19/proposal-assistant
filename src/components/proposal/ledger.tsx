@@ -67,19 +67,21 @@ export function Ledger({
           <tbody>
             {proposals.map((proposal) => (
               <tr key={proposal.id} className="group">
-                <td className="border-b border-rule py-3.5 pr-3 text-sm">
-                  {/* Only the title is the link, not the whole row: the status
-                      cell is its own control, and nesting one inside a link
-                      makes both harder to hit and to reach by keyboard. */}
+                {/* The link fills the cell rather than hugging the text: a
+                    title is short and the column is wide, so wrapping only the
+                    words leaves most of what looks clickable inert. The status
+                    cell stays outside it — it's a control of its own, and
+                    nesting one in a link hurts both hit area and tab order. */}
+                <td className="border-b border-rule pr-3 text-sm">
                   {editable ? (
                     <Link
                       href={`/proposals/${proposal.id}`}
-                      className="underline-offset-4 group-hover:underline"
+                      className="block cursor-pointer py-3.5 underline-offset-4 group-hover:underline"
                     >
                       {proposal.jobTitle}
                     </Link>
                   ) : (
-                    proposal.jobTitle
+                    <span className="block py-3.5">{proposal.jobTitle}</span>
                   )}
                 </td>
                 <td className="hidden border-b border-rule py-3.5 pr-3 font-mono text-xs text-ink-soft sm:table-cell">

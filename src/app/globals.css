@@ -38,6 +38,16 @@
     outline: 2px solid var(--color-moss);
     outline-offset: 3px;
   }
+
+  /* Tailwind's reset leaves anchors and buttons on `cursor: auto`, so nothing
+     in the app answered the pointer. Anything that navigates or acts should
+     say so before it's clicked. */
+  a[href],
+  button:not(:disabled),
+  [role="option"],
+  summary {
+    cursor: pointer;
+  }
 }
 
 /* Tailwind v4 emits `calc(infinity * 1px)` for rounded-full, which compiles to
