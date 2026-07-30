@@ -30,8 +30,17 @@ const nextConfig: NextConfig = {
     // opened on a phone during development (http://192.168.x.x:3000). It was
     // serving a stylesheet from before the latest edit, so newly added utility
     // classes were simply absent — elements rendered unstyled and looked broken
-    // in ways the code no longer explained. Never applied to production, where
-    // the hashed asset names make caching correct and worth having.
+    // in ways the code no longer explained. The exposure is real because
+    // Turbopack's dev CSS chunk name is a path hash, not a content hash: the
+    // file changes, the URL doesn't, so one stale cached copy shadows every
+    // later edit. Never applied to production, where the hashed asset names
+    // make caching correct and worth having.
+    //
+    // Scope: this lands on /_next/static assets — the part that was actually
+    // going stale. HTML documents are the one place Next overrides it (it
+    // forces `no-cache, must-revalidate` in dev, verified on the wire; setting
+    // the header from the proxy loses too), which still obliges the browser to
+    // revalidate the page itself.
     if (!isDev) return [];
 
     return [
