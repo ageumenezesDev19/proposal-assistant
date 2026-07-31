@@ -1,5 +1,10 @@
 -- Pitchfolio schema. Run in the Supabase SQL editor (or `supabase db push`).
 --
+-- Safe to run repeatedly. Postgres has no CREATE POLICY IF NOT EXISTS, so each
+-- policy drops itself first — otherwise re-running this file to pick up a new
+-- table aborted on the first policy that already existed, and left the rest of
+-- the file unapplied.
+--
 -- Every table is scoped to auth.uid() via RLS, so one user can never read or
 -- write another user's row — the policy is the only thing standing between
 -- "my proposals" and "everyone's proposals", since the anon key is public by
@@ -73,37 +78,52 @@ alter table public.snippets enable row level security;
 -- Each policy is "own rows only" — select/insert/update/delete all gated on
 -- auth.uid() matching the row's owner column.
 
+drop policy if exists "profiles: read own" on public.profiles;
 create policy "profiles: read own" on public.profiles
   for select using (auth.uid() = id);
+drop policy if exists "profiles: insert own" on public.profiles;
 create policy "profiles: insert own" on public.profiles
   for insert with check (auth.uid() = id);
+drop policy if exists "profiles: update own" on public.profiles;
 create policy "profiles: update own" on public.profiles
   for update using (auth.uid() = id);
 
+drop policy if exists "cases: read own" on public.cases;
 create policy "cases: read own" on public.cases
   for select using (auth.uid() = user_id);
+drop policy if exists "cases: insert own" on public.cases;
 create policy "cases: insert own" on public.cases
   for insert with check (auth.uid() = user_id);
+drop policy if exists "cases: update own" on public.cases;
 create policy "cases: update own" on public.cases
   for update using (auth.uid() = user_id);
+drop policy if exists "cases: delete own" on public.cases;
 create policy "cases: delete own" on public.cases
   for delete using (auth.uid() = user_id);
 
+drop policy if exists "proposals: read own" on public.proposals;
 create policy "proposals: read own" on public.proposals
   for select using (auth.uid() = user_id);
+drop policy if exists "proposals: insert own" on public.proposals;
 create policy "proposals: insert own" on public.proposals
   for insert with check (auth.uid() = user_id);
+drop policy if exists "proposals: update own" on public.proposals;
 create policy "proposals: update own" on public.proposals
   for update using (auth.uid() = user_id);
+drop policy if exists "proposals: delete own" on public.proposals;
 create policy "proposals: delete own" on public.proposals
   for delete using (auth.uid() = user_id);
 
+drop policy if exists "snippets: read own" on public.snippets;
 create policy "snippets: read own" on public.snippets
   for select using (auth.uid() = user_id);
+drop policy if exists "snippets: insert own" on public.snippets;
 create policy "snippets: insert own" on public.snippets
   for insert with check (auth.uid() = user_id);
+drop policy if exists "snippets: update own" on public.snippets;
 create policy "snippets: update own" on public.snippets
   for update using (auth.uid() = user_id);
+drop policy if exists "snippets: delete own" on public.snippets;
 create policy "snippets: delete own" on public.snippets
   for delete using (auth.uid() = user_id);
 

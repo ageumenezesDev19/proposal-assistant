@@ -6,7 +6,13 @@ import { NewProposalClient } from "./new-proposal-client";
 
 export default async function NewProposalPage() {
   const user = await getCurrentUser();
-  const snippets = user ? await listSnippets() : demoSnippets;
+
+  // Blocks are an accessory to writing a proposal, so losing them must not
+  // take the page down with them. A thrown query here used to 500 the whole
+  // screen — which is exactly what happened when the snippets table hadn't
+  // been created yet. Writing a proposal is the point; blocks are a
+  // convenience, and their absence is survivable.
+  const snippets = user ? await listSnippets().catch(() => []) : demoSnippets;
 
   return (
     <>
