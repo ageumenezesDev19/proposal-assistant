@@ -103,7 +103,7 @@ mono for figures. The signature element is the **manuscript** — the draft is s
 the analysis in the margin beside it, like an editor's marginalia, rather than as a form next to a
 results panel.
 
-→ [`docs/DESIGN.md`](docs/DESIGN.md) · [`docs/SPEC.md`](docs/SPEC.md)
+→ [`docs/DESIGN.md`](docs/DESIGN.md)
 
 ## Running it
 
